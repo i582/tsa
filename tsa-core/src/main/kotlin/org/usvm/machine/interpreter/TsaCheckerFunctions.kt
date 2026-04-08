@@ -1,6 +1,7 @@
 package org.usvm.machine.interpreter
 
 import org.usvm.UConcreteHeapRef
+import org.usvm.machine.state.TvmStack.TvmStackTupleValueConcreteNew
 
 const val FORBID_FAILURES_METHOD_ID = 701
 const val ALLOW_FAILURES_METHOD_ID = 702
@@ -17,6 +18,9 @@ const val MAKE_SLICE_INDEPENDENT_METHOD_ID = 712
 const val INPUT_WAS_ACCEPTED_METHOD_ID = 713
 const val SEND_INTERNAL_MESSAGE_WITH_BODY_METHOD_ID = 714
 const val SEND_EXTERNAL_MESSAGE_WITH_BODY_METHOD_ID = 715
+const val CALL_RAW_METHOD_ID = 716
+
+const val RETURN_ENTIRE_STACK_AS_TUPLE = -1
 
 /**
  * Were calculated using python script:
@@ -68,6 +72,10 @@ data class NewReceiverInput(
     val inputId: Int,
     val type: ReceiverType,
     val body: UConcreteHeapRef? = null,
+) : StackOperations
+
+data class RawTupleCall(
+    val args: TvmStackTupleValueConcreteNew,
 ) : StackOperations
 
 enum class ReceiverType {
