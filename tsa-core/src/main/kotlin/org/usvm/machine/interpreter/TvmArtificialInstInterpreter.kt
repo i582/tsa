@@ -1,6 +1,7 @@
 package org.usvm.machine.interpreter
 
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import org.ton.bytecode.ADDRESS_PARAMETER_IDX
 import org.ton.bytecode.TsaArtificialActionParseInst
 import org.ton.bytecode.TsaArtificialActionPhaseStartInst
@@ -39,6 +40,7 @@ import org.usvm.machine.state.TvmResult
 import org.usvm.machine.state.TvmResult.TvmAbstractSoftFailure
 import org.usvm.machine.state.TvmResult.TvmFailure
 import org.usvm.machine.state.TvmStack
+import org.usvm.machine.state.TvmStack.TvmStackTupleValueConcreteNew
 import org.usvm.machine.state.TvmState
 import org.usvm.machine.state.TvmStructuralError
 import org.usvm.machine.state.TvmTime
@@ -46,6 +48,7 @@ import org.usvm.machine.state.TvmTrackedLiteral
 import org.usvm.machine.state.addCell
 import org.usvm.machine.state.addInt
 import org.usvm.machine.state.addSlice
+import org.usvm.machine.state.addTuple
 import org.usvm.machine.state.allocEmptyBuilder
 import org.usvm.machine.state.allocSliceFromCell
 import org.usvm.machine.state.builderStoreDataBits
@@ -1004,7 +1007,16 @@ class TvmArtificialInstInterpreter(
         stack =
             prevStack.clone() // we should not touch stack from contractStack, as it is contained in other states
         val expectedNumberOfOutputItems = previousEventState.stackEntriesToTake
-        stack.takeValuesFromOtherStack(stackFromOtherContract, expectedNumberOfOutputItems)
+        if (expectedNumberOfOutputItems == RETURN_ENTIRE_STACK_AS_TUPLE) {
+            val outputStack = stackFromOtherContract.clone()
+            val entries =
+                List(outputStack.depth().toInt()) {
+                    outputStack.takeLastEntry()
+                }.asReversed()
+            stack.addTuple(TvmStackTupleValueConcreteNew(ctx, entries.toPersistentList()))
+        } else {
+            stack.takeValuesFromOtherStack(stackFromOtherContract, expectedNumberOfOutputItems)
+        }
         registersOfCurrentContract =
             previousEventState.executionMemory.registers.clone() // like for stack, we shouldn't touch registers
         val storedC7 = checkerC7

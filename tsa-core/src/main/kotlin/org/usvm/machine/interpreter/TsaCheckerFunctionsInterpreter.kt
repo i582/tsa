@@ -47,6 +47,7 @@ import org.usvm.machine.state.takeLastIntOrNull
 import org.usvm.machine.state.takeLastIntOrThrowTypeError
 import org.usvm.machine.state.takeLastSlice
 import org.usvm.machine.state.takeLastSliceOrThrowTypeError
+import org.usvm.machine.state.takeLastTuple
 import org.usvm.machine.toMethodId
 import org.usvm.machine.types.TvmCellType
 import org.usvm.machine.types.TvmIntegerType
@@ -190,6 +191,10 @@ class TsaCheckerFunctionsInterpreter(
                 performRecvExternalCallWithBody(scope, stmt)
             }
 
+            CALL_RAW_METHOD_ID -> {
+                performRawTupleCall(scope, stmt)
+            }
+
             else -> {
                 return Unit
             }
@@ -319,6 +324,33 @@ class TsaCheckerFunctionsInterpreter(
             }
 
         performTsaCall(scope, stackOperations, stmt, nextMethodId, nextContractId)
+    }
+
+    private fun performRawTupleCall(
+        scope: TvmStepScopeManager,
+        stmt: TvmInst,
+    ) {
+        val argsTuple =
+            scope.takeLastTuple()
+                ?: run {
+                    scope.calcOnStateCtx { throwTypeCheckError(this) }
+                    return
+                }
+
+        check(argsTuple is TvmStackTupleValueConcreteNew) {
+            "tsa.callRaw expects a tuple with a concrete size"
+        }
+
+        val nextMethodId =
+            scope.calcOnState {
+                getConcreteIntFromStack(parameterName = "method_id", functionName = "tsa_call_raw")
+            }
+        val nextContractId =
+            scope.calcOnState {
+                getConcreteIntFromStack(parameterName = "contract_id", functionName = "tsa_call_raw")
+            }
+
+        performTsaCall(scope, RawTupleCall(argsTuple), stmt, nextMethodId, nextContractId)
     }
 
     private fun performTsaCall(
@@ -511,6 +543,7 @@ class TsaCheckerFunctionsInterpreter(
             when (stackOperations) {
                 is SimpleStackOperations -> stackOperations.takeFromNewStack
                 is NewReceiverInput -> 0
+                is RawTupleCall -> RETURN_ENTIRE_STACK_AS_TUPLE
             }
 
         check(currentComputeFeeUsed == null) {
@@ -563,6 +596,12 @@ class TsaCheckerFunctionsInterpreter(
             is SimpleStackOperations -> {
                 scope.doWithState {
                     stack.takeValuesFromOtherStack(oldStack, stackOperations.putOnNewStack)
+                }
+            }
+
+            is RawTupleCall -> {
+                scope.doWithState {
+                    stackOperations.args.entries.forEach { stack.addStackEntry(it) }
                 }
             }
 
