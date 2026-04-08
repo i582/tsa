@@ -1,6 +1,8 @@
 # Numeration of functions in `tsa_functions.fc`
 
-Ordinary checker functions are numerated from 1.
+Ordinary checker functions are numerated from 701.
+
+`tsa_mk_int` uses id `100`.
 
 A special case is `tsa_call_X_Y` functions. `Y` is the number of input parameters and `X` is the number of output parameters.
 

@@ -36,75 +36,43 @@ fun main() {
         """
         ;; API functions
 
-        () tsa_forbid_failures() impure method_id(1) {
-            ;; do nothing
-        }
+        () tsa_forbid_failures() impure asm "701 EXTCALL";
 
-        () tsa_allow_failures() impure method_id(2) {
-            ;; do nothing
-        }
+        () tsa_allow_failures() impure asm "702 EXTCALL";
 
-        () tsa_assert(int condition) impure method_id(3) {
-            ;; do nothing
-        }
+        () tsa_assert(int condition) impure asm "703 EXTCALL";
 
-        () tsa_assert_not(int condition) impure method_id(4) {
-            ;; do nothing
-        }
+        () tsa_assert_not(int condition) impure asm "704 EXTCALL";
 
-        forall A -> () tsa_fetch_value(A value, int value_id) impure method_id(5) {
-            ;; do nothing
-        }
+        forall A -> () tsa_fetch_value(A value, int value_id) impure asm "705 EXTCALL";
 
-        () tsa_send_internal_message(int contract_id, int input_id) impure method_id(6) {
-            ;; do nothing
-        }
+        () tsa_send_internal_message(int contract_id, int input_id) impure asm "706 EXTCALL";
 
-        cell tsa_get_c4(int contract_id) impure method_id(7) {
-            return return_1();
-        }
+        cell tsa_get_c4(int contract_id) impure asm "707 EXTCALL";
 
-        () tsa_send_external_message(int contract_id, int input_id) impure method_id(8) {
-            ;; do nothing
-        }
+        () tsa_send_external_message(int contract_id, int input_id) impure asm "708 EXTCALL";
 
-        int tsa_get_balance(int contract_id) impure method_id(9) {
-            return return_1();
-        }
+        int tsa_get_balance(int contract_id) impure asm "709 EXTCALL";
 
         ;; this function shouldn't be used while executing contract [contract_id] (inside checker handlers)
-        () tsa_set_c4(int contract_id, cell value) impure method_id(10) {
-            ;; do nothing
-        }
+        () tsa_set_c4(int contract_id, cell value) impure asm "710 EXTCALL";
 
-        () tsa_make_address_random(slice address) impure method_id(11) {
-            ;; do nothing
-        }
+        () tsa_make_address_random(slice address) impure asm "711 EXTCALL";
         
-        () tsa_make_slice_independent_from_random_addresses(slice independent_slice) impure method_id(12) {
-            ;; do nothing
-        }
+        () tsa_make_slice_independent_from_random_addresses(slice independent_slice) impure asm "712 EXTCALL";
         
-        int tsa_input_was_accepted(int input_id) impure method_id(13) {
-            return return_1();
-        }
+        int tsa_input_was_accepted(int input_id) impure asm "713 EXTCALL";
         
-        () tsa_send_internal_message_with_body(slice body, int contract_id, int input_id) impure method_id(14) {
-            ;; do nothing
-        }
+        () tsa_send_internal_message_with_body(slice body, int contract_id, int input_id) impure asm "714 EXTCALL";
         
-        () tsa_send_external_message_with_body(slice body, int contract_id, int input_id) impure method_id(15) {
-            ;; do nothing
-        }
+        () tsa_send_external_message_with_body(slice body, int contract_id, int input_id) impure asm "715 EXTCALL";
         """.trimIndent()
 
     val mkSymbolicApiFunctions =
         """
         ;; making symbolic values API functions
 
-        int tsa_mk_int(int bits, int signed) impure method_id(100) {
-            return return_1();
-        }
+        int tsa_mk_int(int bits, int signed) impure asm "100 EXTCALL";
         """.trimIndent()
 
     val callFunctions =
@@ -119,16 +87,8 @@ fun main() {
                             "$paramType p$index, "
                         }.joinToString(separator = "")
                 val methodId = 10000 + retParams * 100 + putParams
-                val returnStmt =
-                    if (retParams > 0) {
-                        "return return_$retParams();"
-                    } else {
-                        ";; do nothing"
-                    }
                 """
-                forall ${typeParams.joinToString()} -> $retTypeParams tsa_call_${retParams}_$putParams(${putParamsRendered}int id_contract, int id_method) impure method_id($methodId) {
-                    $returnStmt
-                }
+                forall ${typeParams.joinToString()} -> $retTypeParams tsa_call_${retParams}_$putParams(${putParamsRendered}int id_contract, int id_method) impure asm "$methodId EXTCALL";
                 """.trimIndent()
             }
         }.flatten().joinToString(prefix = ";; calling methods functions$DOUBLE_SEPARATOR", separator = DOUBLE_SEPARATOR)

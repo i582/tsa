@@ -1503,6 +1503,7 @@ x{FE3} @Defop(s) PRINT
 { 0 DEBUGSTRI } : LOGSTR
 { 1 DEBUGSTRI } : PRINTSTR
 x{FEF000} @Defop LOGFLUSH
+{ <b x{FC00} s, swap 32 u, @addopb } : EXTCALL
 
 //
 // codepage primitives

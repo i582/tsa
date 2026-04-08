@@ -9,6 +9,7 @@ nav_order: 4
 
 These intrinsic instructions are only valid in the checker contract.
 They are declared in the generated file [tsa_functions.fc](https://github.com/espritoxyz/tsa/blob/master/tsa-safety-properties-examples/src/test/resources/imports/tsa_functions.fc).
+Checker intrinsics are emitted as `EXTCALL`s; ordinary checker intrinsic ids start at `701`.
 
 
 ## Calls Table

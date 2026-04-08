@@ -157,6 +157,7 @@ import org.ton.bytecode.TvmContRegistersSetcontctrInst
 import org.ton.bytecode.TvmContRegistersSetcontctrmanyInst
 import org.ton.bytecode.TvmContStackInst
 import org.ton.bytecode.TvmContinuation
+import org.ton.bytecode.TvmDebugExtcallInst
 import org.ton.bytecode.TvmDebugInst
 import org.ton.bytecode.TvmDictInst
 import org.ton.bytecode.TvmDictSpecialDictigetjmpzInst
@@ -3410,8 +3411,18 @@ class TvmInterpreter(
     ) {
         scope.consumeDefaultGas(stmt)
 
-        // Do nothing
-        scope.doWithState { newStmt(stmt.nextStmt()) }
+        when (stmt) {
+            is TvmDebugExtcallInst -> {
+                tsaCheckerFunctionsInterpreter.doTSACheckerOperation(scope, stmt, stmt.t)
+                    ?: return
+                error("Unsupported EXTCALL ${stmt.t}")
+            }
+
+            else -> {
+                // Do nothing
+                scope.doWithState { newStmt(stmt.nextStmt()) }
+            }
+        }
     }
 
     private fun visitCodepageInst(
