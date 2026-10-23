@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation(project(":tsa-core"))
 
-    implementation(group = Packages.tvmDisasm, name = "tvm-opcodes", version = Versions.tvmDisasm)
+    implementation(project(":tvm-opcodes"))
 
     implementation("org.ton:ton-kotlin-crypto:0.3.1")
     implementation("org.ton:ton-kotlin-tvm:0.3.1")
