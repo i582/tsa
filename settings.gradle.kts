@@ -7,17 +7,10 @@ pluginManagement {
     }
 }
 
-includeBuild("ton-disassembler") {
-    dependencySubstitution {
-        substitute(module("com.github.espritoxyz.ton-disassembler:tvm-disasm"))
-            .using(project(":tvm-disasm"))
-        substitute(module("com.github.espritoxyz.ton-disassembler:tvm-opcodes"))
-            .using(project(":tvm-opcodes"))
-    }
-}
-
 include("tsa-core")
 include("tsa-cli")
+include("tvm-disasm")
+include("tvm-opcodes")
 include("tsa-sarif")
 include("tsa-test-gen")
 include("tsa-jettons")

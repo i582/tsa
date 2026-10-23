@@ -8,7 +8,7 @@ plugins {
 }
 
 dependencies {
-    implementation(group = Packages.tvmDisasm, name = "tvm-opcodes", version = Versions.tvmDisasm)
+    implementation(project(":tvm-opcodes"))
 
     implementation(project(":tsa-core"))
     implementation(project(":tsa-sarif"))

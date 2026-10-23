@@ -11,7 +11,6 @@ object Versions {
     const val junitParams = "5.9.3"
     const val logback = "1.5.27"
     const val usvm = "dab6d43261eba1c4e72b35d8eda91763b6494934"
-    const val tvmDisasm = "ac4baedf7cb7bc04ca9ba3d5cf9f4e294f00b10f"
     const val tonKotlin = "0.3.1"
     const val kotlinterPluginVersion = "5.0.0"
     const val asyncProfiler = "4.1"
@@ -23,6 +22,5 @@ object Packages {
     const val usvm = "com.github.UnitTestBot.usvm"
     const val ksmt = "io.ksmt"
     const val ksmtBv2Int = "com.github.tochilinak.ksmt"
-    const val tvmDisasm = "com.github.espritoxyz.ton-disassembler"
     const val tonKotlin = "org.ton"
 }

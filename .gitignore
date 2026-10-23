@@ -9,6 +9,7 @@ buildSrc/.gradle
 
 # Ignore Idea directory
 .idea
+.DS_Store
 
 *.libcache
 *.blkstate

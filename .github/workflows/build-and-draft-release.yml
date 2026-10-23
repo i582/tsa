@@ -33,7 +33,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-          submodules: recursive
 
       - name: 'Add git path to trusted'
         run: |

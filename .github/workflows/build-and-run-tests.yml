@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
 #        We don't need to setup Java because it is manually installed in the Docker image
 
