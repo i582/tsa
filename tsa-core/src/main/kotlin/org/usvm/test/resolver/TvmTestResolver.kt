@@ -34,6 +34,7 @@ data object TvmTestResolver {
 
         val input = stateResolver.resolveInput()
         val fetchedValues = stateResolver.resolveFetchedValues()
+        val fetchedValueNames = stateResolver.resolveFetchedValueNames()
         val config = stateResolver.resolveConfig()
         val contractAddress = stateResolver.resolveContractAddresses()
         val time = stateResolver.resolveTime()
@@ -57,6 +58,7 @@ data object TvmTestResolver {
             time = time,
             input = input,
             fetchedValues = fetchedValues,
+            fetchedValueNames = fetchedValueNames,
             result = result,
             lastStmt = state.lastRealStmt,
             gasUsage = gasUsage,
@@ -150,6 +152,7 @@ data class TvmSymbolicTest(
     val input: TvmTestInput,
     val additionalInputs: Map<Int, TvmTestInput.ReceiverInput>,
     val fetchedValues: Map<Int, TvmTestValue>,
+    val fetchedValueNames: Map<Int, String>,
     val result: TvmTestResult,
     val lastStmt: TvmRealInst?, // null if the body is empty
     val gasUsage: Int,

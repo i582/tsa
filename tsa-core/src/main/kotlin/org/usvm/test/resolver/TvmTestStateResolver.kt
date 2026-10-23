@@ -91,6 +91,7 @@ import org.usvm.memory.UMemory
 import org.usvm.mkSizeExpr
 import org.usvm.sizeSort
 import org.usvm.solver.UExprTranslator
+import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 
 class TvmTestStateResolver(
@@ -192,6 +193,34 @@ class TvmTestStateResolver(
                     ?: error("Fetched value $index was expected to be concrete stack entry, but got $stackEntry")
 
             resolveStackValue(value)
+        }
+
+    fun resolveFetchedValueNames(): Map<Int, String> =
+        state.fetchedValueNames.mapValues { (_, cell) ->
+            val bytes = ByteArrayOutputStream()
+            var current = resolveCell(cell)
+
+            while (true) {
+                val dataCell =
+                    current as? TvmTestDataCellValue
+                        ?: error("Saved value name must be a data cell")
+                check(dataCell.data.length % 8 == 0) {
+                    "Saved value name must contain whole UTF-8 bytes"
+                }
+
+                dataCell.data.chunked(8).forEach { bits ->
+                    bytes.write(bits.toInt(2))
+                }
+
+                current =
+                    when (dataCell.refs.size) {
+                        0 -> break
+                        1 -> dataCell.refs.single()
+                        else -> error("Saved value name must be a snake string")
+                    }
+            }
+
+            bytes.toString(Charsets.UTF_8)
         }
 
     fun resolveInitialData(): Map<ContractId, TvmTestCellValue> =

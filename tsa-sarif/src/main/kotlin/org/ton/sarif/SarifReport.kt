@@ -121,6 +121,9 @@ private fun List<TvmSymbolicTest>.toSarifResult(
                 it.fetchedValues.takeIf { it.isNotEmpty() }?.let {
                     "fetchedValues" to json.encodeToJsonElement(it)
                 },
+                it.fetchedValueNames.takeIf { it.isNotEmpty() }?.let {
+                    "fetchedValueNames" to json.encodeToJsonElement(it)
+                },
                 "rootContractInitialC4" to json.encodeToJsonElement(it.rootInitialData),
                 "additionalInputs" to json.encodeToJsonElement(it.additionalInputs),
                 "events" to json.encodeToJsonElement(it.eventsList),

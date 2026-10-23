@@ -78,6 +78,7 @@ class TvmState(
     var contractStack: PersistentList<TvmEventInformation> = persistentListOf(),
     var currentContract: ContractId,
     var fetchedValues: PersistentMap<Int, TvmStack.TvmStackEntry> = persistentMapOf(),
+    var fetchedValueNames: PersistentMap<Int, UHeapRef> = persistentMapOf(),
     var additionalFlags: PersistentSet<String> = persistentHashSetOf(),
     var unprocessedMessages: PersistentList<Pair<ContractId, DispatchedMessageContent>> = persistentListOf(),
     // inter-contract fields
@@ -221,6 +222,7 @@ class TvmState(
             refToDepth = refToDepth,
             signatureChecks = signatureChecks,
             fetchedValues = fetchedValues,
+            fetchedValueNames = fetchedValueNames,
             additionalFlags = additionalFlags,
             fieldManagers = fieldManagers.clone(),
             messageQueue = messageQueue,

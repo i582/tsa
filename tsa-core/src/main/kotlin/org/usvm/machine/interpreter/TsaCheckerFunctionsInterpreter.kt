@@ -43,6 +43,7 @@ import org.usvm.machine.state.newStmt
 import org.usvm.machine.state.nextStmt
 import org.usvm.machine.state.switchToFirstMethodInContract
 import org.usvm.machine.state.takeLastCell
+import org.usvm.machine.state.takeLastCellOrThrowTypeError
 import org.usvm.machine.state.takeLastIntOrNull
 import org.usvm.machine.state.takeLastIntOrThrowTypeError
 import org.usvm.machine.state.takeLastSlice
@@ -145,6 +146,10 @@ class TsaCheckerFunctionsInterpreter(
 
             FETCH_VALUE_METHOD_ID -> {
                 performFetchValue(scope, stmt)
+            }
+
+            REGISTER_VALUE_NAME_METHOD_ID -> {
+                performRegisterValueName(scope, stmt)
             }
 
             SEND_INTERNAL_MESSAGE_METHOD_ID -> {
@@ -668,6 +673,22 @@ class TsaCheckerFunctionsInterpreter(
                 "Value with id $valueId is already present: $fetchedValues[$valueId]"
             }
             fetchedValues = fetchedValues.put(valueId, entry)
+            newStmt(stmt.nextStmt())
+        }
+    }
+
+    private fun performRegisterValueName(
+        scope: TvmStepScopeManager,
+        stmt: TvmInst,
+    ) {
+        val name = scope.takeLastCellOrThrowTypeError() ?: return
+
+        scope.doWithState {
+            val valueId = getConcreteIntFromStack(parameterName = "value_id", functionName = "tsa_register_value_name")
+            check(!fetchedValueNames.containsKey(valueId)) {
+                "Name for value id $valueId is already registered"
+            }
+            fetchedValueNames = fetchedValueNames.put(valueId, name)
             newStmt(stmt.nextStmt())
         }
     }
