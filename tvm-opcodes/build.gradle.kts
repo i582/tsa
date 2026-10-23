@@ -9,3 +9,7 @@ dependencies {
     implementation("org.ton:ton-kotlin-tvm:${Versions.tonKotlin}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinx_serialization}")
 }
+
+tasks.named("compileKotlin") {
+    dependsOn(":tvm-disasm:generateInstructions")
+}
