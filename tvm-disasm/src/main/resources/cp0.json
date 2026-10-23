@@ -37945,6 +37945,55 @@
       "bytecode": {
         "operands": [
           {
+            "display_hints": [],
+            "max_value": 1000000,
+            "min_value": 0,
+            "name": "t",
+            "size": 32,
+            "type": "uint"
+          }
+        ],
+        "prefix": "FC00",
+        "tlb": "#FC00 t:(## 32)"
+      },
+      "control_flow": {
+        "branches": [],
+        "nobranch": true
+      },
+      "doc": {
+        "category": "debug",
+        "description": "Calls host-defined external extension method with identifier `t`.",
+        "fift": "[t] EXTCALL",
+        "fift_examples": [],
+        "gas": "58",
+        "opcode": "FC00tttttttt",
+        "stack": "-"
+      },
+      "implementation": [
+        {
+          "file": "debugops.cpp",
+          "function_name": "exec_extcall",
+          "line": 0,
+          "path": ""
+        }
+      ],
+      "mnemonic": "EXTCALL",
+      "since_version": 0,
+      "value_flow": {
+        "inputs": {
+          "registers": [],
+          "stack": []
+        },
+        "outputs": {
+          "registers": [],
+          "stack": []
+        }
+      }
+    },
+    {
+      "bytecode": {
+        "operands": [
+          {
             "display_hints": [
               {
                 "type": "continuation"
